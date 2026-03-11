@@ -7,6 +7,7 @@
     <test name="Login Tests">
         <classes>
             <class name="com.sdet.LoginTest"/>
+            <class name="com.sdet.NetworkInterceptTest"/>
         </classes>
     </test>
 </suite>
