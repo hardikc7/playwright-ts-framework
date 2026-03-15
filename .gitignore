@@ -1,7 +1,8 @@
-target/
 .idea/
 .vscode/
 *.log
 .DS_Store
 target/
+test-output/
+*.html
 .vscode/
