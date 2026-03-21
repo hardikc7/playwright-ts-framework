@@ -1,121 +1,100 @@
-# Playwright Java Automation Framework
+# Playwright TypeScript Framework
 
-Production-grade test automation framework built with Playwright Java and TestNG following Page Object Model design pattern.
+Production-grade E2E test automation framework built with Playwright and TypeScript following Page Object Model design pattern.
+
+![CI](https://github.com/hardikc7/playwright-ts-framework/actions/workflows/ci.yml/badge.svg)
 
 ## Tech Stack
-- Java 17
-- Playwright 1.42.0
-- TestNG 7.9.0
-- Maven
-- ExtentReports 5.1.1
-- JSON Simple (test data)
 
-## Framework Architecture
+- TypeScript
+- Playwright
+- Node.js 18
+- GitHub Actions CI/CD
+
+## Framework Structure
 ```
-src/
-├── main/java/com/sdet/
-│   ├── pages/
-│   │   ├── BasePage.java         # Parent class — all Playwright actions
-│   │   └── LoginPage.java        # Login page object
-│   └── utils/
-│       ├── BrowserManager.java   # ThreadLocal browser management
-│       ├── ConfigReader.java     # Reads config.properties
-│       └── TestDataReader.java   # Reads JSON test data files
-└── test/
-    ├── java/com/sdet/
-    │   ├── utils/
-    │   │   ├── ExtentReportManager.java  # HTML report setup
-    │   │   └── TestListener.java         # TestNG lifecycle hooks
-    │   ├── LoginTest.java                # Data-driven login tests
-    │   └── NetworkInterceptTest.java     # Network intercept tests
-    └── resources/
-        ├── config.properties             # Browser, baseUrl config
-        └── testdata/
-            └── loginData.json            # External test data
+playwright-ts-framework/
+├── pages/
+│   ├── BasePage.ts          # Shared Playwright actions (click, fill, check, getText, isVisible)
+│   ├── LoginPage.ts         # Login page — locators, actions, urlPath
+│   ├── DashboardPage.ts     # Dashboard page — success message verification
+│   └── ElementPage.ts       # Checkboxes and Add/Remove elements page
+├── tests/
+│   ├── login.spec.ts        # Login test suite
+│   └── element.spec.ts      # Element interaction test suite
+├── test-data/
+│   └── loginData.json       # External test credentials and expected messages
+├── utils/
+│   └── ConfigReader.ts      # Environment-based config loader
+├── config/
+│   └── dev.json             # Dev environment config (baseUrl, browser)
+├── .github/workflows/
+│   └── ci.yml               # GitHub Actions pipeline
+└── playwright.config.ts     # Playwright configuration
 ```
-
-## Key Features
-- **ThreadLocal BrowserManager** — thread-safe parallel execution
-- **Browser switching** — Chrome, Firefox, Safari via config.properties
-- **Page Object Model** — clean separation of page logic and tests
-- **Data-driven testing** — JSON external test data via DataProvider
-- **Network intercept** — mock APIs, block requests, log calls
-- **ExtentReports** — dark theme HTML report with pass/fail details
-- **Zero hardcoded values** — all config and test data externalized
-
-## Setup & Run
-
-### Prerequisites
-- Java 17+
-- Maven 3.6+
-
-### Clone and Run
-```bash
-git clone https://github.com/hardikc7/playwright-java-framework.git
-cd playwright-java-framework
-mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install"
-mvn test
-```
-
-### Switch Browser
-Edit `src/test/resources/config.properties`:
-```properties
-browser=firefox   # chromium / firefox / webkit
-```
-
-## Test Results
-```
-Tests run: 7
-Failures:  0
-Errors:    0
-```
-
-## Test Scenarios
-
-### Login Tests (Data-Driven)
-| Test Case | Username | Expected | Status |
-|-----------|----------|----------|--------|
-| Valid login | tomsmith | Redirect to /secure | ✅ Pass |
-| Invalid username | wronguser | "username is invalid" | ✅ Pass |
-| Empty credentials | (empty) | "username is invalid" | ✅ Pass |
-
-### Network Intercept Tests
-| Test | What it does | Status |
-|------|-------------|--------|
-| testBlockImages | Blocks all image requests | ✅ Pass |
-| testMockApiResponse | Returns fake JSON response | ✅ Pass |
-| testLogNetworkCalls | Logs all requests and responses | ✅ Pass |
-| testModifyRequestHeaders | Injects custom headers | ✅ Pass |
-
-## Network Intercept — 3 Patterns
-```java
-// Block request completely
-route.abort();
-
-// Return fake response
-route.fulfill(new Route.FulfillOptions()
-    .setStatus(200)
-    .setBody("{\"name\": \"Hardik\"}"));
-
-// Modify and pass through
-route.resume(new Route.ResumeOptions()
-    .setHeaders(modifiedHeaders));
-```
-
-## Playwright vs Selenium
-
-| | Playwright | Selenium |
-|--|-----------|---------|
-| Waits | Auto-wait built in | Explicit waits required |
-| Locators | CSS strings | By.id(), By.xpath() |
-| Network intercept | Built in | Not supported |
-| Browser support | Chrome, Firefox, Safari | Chrome, Firefox, Edge |
-| Speed | Faster | Slower |
-| Setup | Simple | WebDriverManager needed |
 
 ## Design Decisions
-- **ThreadLocal** over static Page — safe for TestNG parallel execution
-- **BrowserContext per test** — isolated session, no cookie leakage
-- **BasePage** handles all Playwright calls — pages stay clean
-- **getFlashMessage()** handles both success and error — no duplicate locators
-- **JSON test data** — non-technical team members can update without code changes
+
+- **Page Object Model** — locators and actions owned by page classes, zero test logic in pages
+- **Locator type over string** — fields typed as `Locator` for Playwright auto-retry and smart waiting
+- **Semantic locators** — `getByRole`, `getByLabel`, `locator('#id')` used in priority order
+- **Page owns its URL** — each page class holds its own `urlPath`, tests never hardcode URLs
+- **Secondary sites use full URL** — `ElementPage` tests a different domain, full URL hardcoded in page class
+- **Environment config** — `config/dev.json` drives `baseUrl`, loaded via `ConfigReader`
+- **Headless auto-detect** — headed locally, headless in CI via `process.env.CI`
+- **Video on CI** — `video: 'on'` in CI for debugging failures, off locally
+- **SlowMo support** — `SLOWMO=500 npx playwright test` slows execution for debugging
+- **`beforeEach` initialization** — page objects created once per describe block, not per test
+- **Built-in HTML reporter** — no third-party reporting library needed
+
+## Setup
+```bash
+npm install
+npx playwright install chromium
+```
+
+## Run Tests
+```bash
+# All tests
+npx playwright test
+
+# Single test file
+npx playwright test tests/login.spec.ts
+
+# With browser visible
+npx playwright test --headed
+
+# Slow motion for debugging
+SLOWMO=500 npx playwright test --headed
+
+# Specific environment
+ENV=staging npx playwright test
+
+# View HTML report
+npx playwright show-report
+```
+
+## Test Coverage
+
+### Login Tests — `practicetestautomation.com`
+
+| Test | Status |
+|------|--------|
+| Valid login shows success message | ✅ |
+| Invalid login shows error message | ✅ |
+| Successful login then logout | ✅ |
+
+### Element Tests — `the-internet.herokuapp.com`
+
+| Test | Status |
+|------|--------|
+| Checkboxes — verify count and check all | ✅ |
+| Add/Remove elements — add 3, delete 1, verify count | ✅ |
+
+## CI/CD
+
+GitHub Actions triggers on every push to `main`:
+- Installs Node.js 18 and Playwright Chromium
+- Runs full test suite headless
+- Records video for every test run
+- Uploads HTML report and videos as artifacts

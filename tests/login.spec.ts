@@ -13,7 +13,7 @@ test.describe('Login Tests', () => {
     await loginPage.navigateTo();
   });
 
-  test('valid login should show success message', async ({ page }) => {
+  test('valid login should show success message', async () => {
     await loginPage.login(loginData.validUser.email, loginData.validUser.password);
 
     const isLoaded = await dashboardPage.isPageLoaded();
@@ -22,13 +22,13 @@ test.describe('Login Tests', () => {
     expect(message).toContain(loginData.validUser.expectedMessage);
   });
 
-  test('invalid login show error message', async ({page}) =>{
+  test('invalid login show error message', async () =>{
     await loginPage.login(loginData.invalidUser.email,loginData.invalidUser.password);
     const errorMessage = await loginPage.getErrorMessage();
     expect(errorMessage).toContain(loginData.invalidUser.expectedMessage);
   });
 
-  test('successful login then logout', async ({ page }) => {
+  test('successful login then logout', async () => {
     await loginPage.login(loginData.validUser.email, loginData.validUser.password);
     const isLoaded = await dashboardPage.isPageLoaded();
     expect(isLoaded).toBeTruthy();
