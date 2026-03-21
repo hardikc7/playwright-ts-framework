@@ -1,32 +1,35 @@
-import { Page } from "@playwright/test";
+import { Page, Locator } from '@playwright/test';
 
 export class BasePage {
     protected page: Page;
+
     constructor(page: Page) {
         this.page = page;
     }
+
     async goToUrl(url: string): Promise<void> {
         await this.page.goto(url);
     }
-    async click(selector: string): Promise<void> {
-        await this.page.locator(selector).click();
+
+    async click(locator: Locator): Promise<void> {
+        await locator.click();
     }
-    async fill(selector: string, value: string): Promise<void> {
-        await this.page.locator(selector).fill(value);
+    async check(locator: Locator): Promise<void> {
+        await locator.check();
     }
-    async getText(selector: string): Promise<string> {
-        return await this.page.locator(selector).innerText();
+    async fill(locator: Locator, value: string): Promise<void> {
+        await locator.fill(value);
     }
 
-    async isVisible(selector: string): Promise<boolean> {
-        return await this.page.locator(selector).isVisible();
+    async getText(locator: Locator): Promise<string> {
+        return await locator.innerText();
+    }
+
+    async isVisible(locator: Locator): Promise<boolean> {
+        return await locator.isVisible();
     }
 
     async getTitle(): Promise<string> {
         return await this.page.title();
-    }
-
-    async takeScreenshot(name: string): Promise<void> {
-        await this.page.screenshot({ path: `screenshots/${name}.png` });
     }
 }

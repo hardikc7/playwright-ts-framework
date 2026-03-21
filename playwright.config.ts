@@ -12,8 +12,11 @@ export default defineConfig({
   use: {
     baseURL: ConfigReader.get('baseUrl'),
     headless: process.env.CI ? true : false,
+    video: process.env.CI ? 'on' : 'off',           // record video only on CI
     screenshot: 'only-on-failure',
-    video: 'off',
+    launchOptions: {
+      slowMo: process.env.SLOWMO ? parseInt(process.env.SLOWMO) : 0,
+    },
   },
   projects: [
     {

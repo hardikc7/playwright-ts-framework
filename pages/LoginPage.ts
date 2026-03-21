@@ -1,18 +1,19 @@
-import { Page } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class LoginPage extends BasePage {
+    private readonly urlPath: string = '/practice-test-login/';
+
     constructor(page: Page) {
         super(page);
     }
-    private readonly urlPath: string = '/practice-test-login/';
-    private emailInput: string = '#username';
-    private passwordInput: string = '#password';
-    private loginButton: string = '#submit';
-    private logoutLink: string = '.wp-block-button__link';
-    private errorMessage: string = '#error';
-    private successMessage: string = '.post-title';
-    
+
+    private emailInput: Locator = this.page.locator('#username');
+    private passwordInput: Locator = this.page.locator('#password');
+    private loginButton: Locator = this.page.locator('#submit');
+    private logoutLink: Locator = this.page.locator('.wp-block-button__link');
+    private errorMessage: Locator = this.page.locator('#error');
+
     async navigateTo(): Promise<void> {
         await this.goToUrl(this.urlPath);
     }
