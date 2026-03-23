@@ -7,10 +7,13 @@ export class ElementPage extends BasePage {
     }
     private readonly checkboxesUrl: string = 'https://the-internet.herokuapp.com/checkboxes';
     private readonly addRemoveUrl: string = 'https://the-internet.herokuapp.com/add_remove_elements/';
+    private readonly dropDownUrl: string = 'https://the-internet.herokuapp.com/dropdown';
+    
     private checkboxes = this.page.locator('#checkboxes input[type="checkbox"]')
     private addElementBtn = this.page.getByRole('button', { name: 'Add Element' })
     private deleteButtons = this.page.locator('#elements button[class="added-manually"]');
-
+    private dropDownMenu = this.page.locator('#dropdown');
+    
     getCheckboxes(): Locator {
         return this.checkboxes
     }
@@ -19,8 +22,15 @@ export class ElementPage extends BasePage {
         return this.deleteButtons
     }
 
+    getDropDownMenu(): Locator{
+        return this.dropDownMenu;
+    }
+
     async navigateToCheckboxes(): Promise<void> {
         await this.goToUrl(this.checkboxesUrl);
+    }
+    async navigateToDropDown(): Promise<void> {
+        await this.goToUrl(this.dropDownUrl);
     }
 
     async navigateToAddRemove(): Promise<void> {
@@ -35,6 +45,9 @@ export class ElementPage extends BasePage {
         for (let i = 0; i < count; i++) {
             await this.check(this.checkboxes.nth(i));
         }
+    }
+    async selectDropDownValue(value: string): Promise<void>{
+        await this.selectOption(this.dropDownMenu, value);
     }
 
 }

@@ -20,6 +20,9 @@ export class BasePage {
     async fill(locator: Locator, value: string): Promise<void> {
         await locator.fill(value);
     }
+    async selectOption(locator: Locator, value: string): Promise<void>{
+        await locator.selectOption({label: value});
+    }
 
     async getText(locator: Locator): Promise<string> {
         return await locator.innerText();

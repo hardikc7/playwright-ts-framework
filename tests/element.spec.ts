@@ -8,7 +8,7 @@ test.describe('Element page exercises', () => {
     elementPage = new ElementPage(page)
   });
 
-  test('Exercise 2 — Checkboxes', async () => {
+  test('Exercise 1 — Checkboxes', async () => {
     await elementPage.navigateToCheckboxes();
 
     // count — locator goes to expect, auto-retry works
@@ -25,7 +25,7 @@ test.describe('Element page exercises', () => {
 
   });
 
-  test('Exercise 3 — Add Remove Elements', async () => {
+  test('Exercise 2 — Add Remove Elements', async () => {
     await elementPage.navigateToAddRemove();
     // click 3 times
     await elementPage.clickAddElement()
@@ -40,5 +40,14 @@ test.describe('Element page exercises', () => {
 
     // assert 2 remain
     await expect(elementPage.getDeleteButtons()).toHaveCount(2)
+  });
+
+  test('Exercise 3 — Select DropDownValues', async () => {
+    await elementPage.navigateToDropDown();
+    await elementPage.selectDropDownValue('Option 1')
+    await expect(elementPage.getDropDownMenu()).toHaveValue('1');
+    await elementPage.selectDropDownValue('Option 2')
+    await expect(elementPage.getDropDownMenu()).toHaveValue('2');
+    await expect(elementPage.getDropDownMenu()).not.toHaveValue('1');
   });
 });
