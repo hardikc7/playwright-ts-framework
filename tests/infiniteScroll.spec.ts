@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { InfiniteScrollPage } from '../pages/InfiniteScrollPage';
 
 test.describe('Infinite Scroll page exercises', () => {
+  test.describe.configure({ mode: 'serial' });
   let infiniteScrollPage: InfiniteScrollPage;
 
   test.beforeEach(async ({ page }) => {
@@ -19,13 +20,10 @@ test.describe('Infinite Scroll page exercises', () => {
   });
 
   // TC-002: Verify more content loads after scrolling down
-  test('TC-002 — Verify more content loads after scrolling down', async ({ page }) => {
+  test('TC-002 — Verify more content loads after scrolling down', async ({page}) => {
     await infiniteScrollPage.navigate();
-
     const initialCount = await infiniteScrollPage.getContentItems().count();
-
     await infiniteScrollPage.scrollToBottom();
-
     await expect(infiniteScrollPage.getContentItems()).toHaveCount(initialCount + 1, { timeout: 10000 });
   });
 });

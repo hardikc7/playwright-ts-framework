@@ -8,8 +8,8 @@ export class InfiniteScrollPage extends BasePage {
 
     private readonly url: string = 'https://the-internet.herokuapp.com/infinite_scroll';
 
-    private heading = this.page.locator('h3');
-    private contentItems = this.page.locator('.jscroll-inner div');
+    private heading = this.page.getByRole('heading', { name: 'Infinite Scroll' })
+    private contentItems: Locator = this.page.locator('.jscroll-added');
 
     getHeading(): Locator {
         return this.heading;

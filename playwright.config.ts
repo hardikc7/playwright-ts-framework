@@ -8,6 +8,7 @@ export default defineConfig({
   testDir: './tests',
   timeout: 30000,
   retries: 1,
+  workers: process.env.CI ? 2 : 4,
   reporter: [['html', { open: 'never' }]],
   use: {
     baseURL: ConfigReader.get('baseUrl'),
