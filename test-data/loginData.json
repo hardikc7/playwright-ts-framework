@@ -1,12 +1,35 @@
 {
-    "validUser": {
+  "validUser": {
+    "email": "student",
+    "password": "Password123",
+    "expectedMessage": "Logged In Successfully"
+  },
+  "invalidUser": {
+    "email": "wrongUser",
+    "password": "wrongPassword",
+    "expectedMessage": "Your username is invalid!"
+  },
+  "testCases": [
+    {
+      "description": "valid login",
       "email": "student",
       "password": "Password123",
-      "expectedMessage": "Logged In Successfully"
+      "expectedMessage": "Logged In Successfully",
+      "shouldSucceed": true
     },
-    "invalidUser": {
+    {
+      "description": "invalid username",
       "email": "wrongUser",
       "password": "wrongPassword",
-      "expectedMessage": "Your username is invalid!"
+      "expectedMessage": "Your username is invalid!",
+      "shouldSucceed": false
+    },
+    {
+      "description": "empty credentials",
+      "email": "",
+      "password": "",
+      "expectedMessage": "Your username is invalid!",
+      "shouldSucceed": false
     }
-  }
+  ]
+}
